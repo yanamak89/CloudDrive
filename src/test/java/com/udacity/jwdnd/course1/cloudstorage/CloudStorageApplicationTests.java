@@ -183,36 +183,34 @@ public class CloudStorageApplicationTests {
     @Order(6)
     public void testAddEditDeleteCredentials() {
         doLoginFunction();
-
         credentialTabPage = new CredentialTabPage(driver);
-        WebElement nav = driver.findElement(By.id("nav-credentials-tab"));
-        nav.click();
-        driver.findElement(By.id("add-credential"));
-        nav.click();
-        credentialTabPage.addCredential(driver, "www.superduperdrive.com", "Test", "test123", nav);
-        driver.findElement(By.id("credentialSubmit"));
-        nav.click();
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credentialSubmit")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url"))).sendKeys("www.superduperdrive.com");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-userName"))).sendKeys("Test UserName");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-password"))).sendKeys("test123");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-modal-submit"))).click();
         List<String> detail = credentialTabPage.getDetail(driver);
-
         Assertions.assertEquals("www.superduperdrive.com", detail.get(0));
         Assertions.assertEquals("Test", detail.get(1));
-        Assertions.assertNotEquals("test123", detail.get(2));
-
-        wait.until(driver -> driver.findElement(By.id("edit-credential"))).click();
-        WebElement inputPassword = wait.until(driver -> driver.findElement(By.id("credential-password")));
-        String password = inputPassword.getAttribute("value");
-        Assertions.assertEquals("test123", password);
-        credentialTabPage.close(driver);
-
-        credentialTabPage.editCredential(driver, "www.superduperdrive.com", "Test1", "testPass");
-
+        Assertions.assertEquals("test123", detail.get(2));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("delete-credential"))).click();
         driver.get("http://localhost:" + this.port + "/home");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab"))).click();
+        try{
+            Thread.sleep(1000);
+        }catch(InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        detail = credentialTabPage.getDetail(driver);
+        String credentialSize = wait.until(driver ->driver.findElement(By.id("credentialSize")).getText());
+        Assertions.assertEquals("0", credentialSize);
 
-        Assertions.assertEquals("www.superduperdrive.com", detail.get(0));
-        Assertions.assertEquals("Test1", detail.get(1));
-        Assertions.assertEquals("testPass", detail.get(2));
+        homePage = new HomePage(driver);
+        homePage.logout();
+        wait.until(ExpectedConditions.titleContains("Login"));
+        Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
 
     }
 }

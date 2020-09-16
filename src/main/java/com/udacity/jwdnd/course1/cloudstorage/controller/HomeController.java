@@ -29,13 +29,6 @@ public class HomeController {
     @Autowired
     private EncryptionService encryptionService;
 
-//    public HomeController(FileService fileService, NoteServices noteServices, CredentialService credentialService, AuthenticatedUserService authenticatedUserService, EncryptionService encryptionService) {
-//        this.fileService = fileService;
-//        this.noteServices = noteServices;
-//        this.credentialService = credentialService;
-//        this.authenticatedUserService = authenticatedUserService;
-//        this.encryptionService = encryptionService;
-//    }
 
     @GetMapping("/home")
     public String getHomePage(@ModelAttribute("noteForm") NoteForm noteForm, @ModelAttribute("credentialForm") CredentialForm credentialForm, Authentication authentication, Model model) {

@@ -183,29 +183,62 @@ public class CloudStorageApplicationTests {
     @Order(6)
     public void testAddEditDeleteCredentials() {
         doLoginFunction();
+        //Add credentials
         credentialTabPage = new CredentialTabPage(driver);
         WebDriverWait wait = new WebDriverWait(driver, 30);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("credentialSubmit")));
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url"))).sendKeys("www.superduperdrive.com");
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-userName"))).sendKeys("Test UserName");
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-password"))).sendKeys("test123");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("add-credential"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")))
+                .sendKeys("www.superduperdrive.com");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-userName")))
+                .sendKeys("Test UserName");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-password")))
+                .sendKeys("test123");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-modal-submit"))).click();
+
+        //Check added credentials
         List<String> detail = credentialTabPage.getDetail(driver);
         Assertions.assertEquals("www.superduperdrive.com", detail.get(0));
+        Assertions.assertEquals("Test UserName", detail.get(1));
+        Assertions.assertNotEquals("test123", detail.get(2));
+
+
+        //Editing the username only
+        driver.get("http://localhost:" + this.port + "/home");
+        wait = new WebDriverWait(driver, 30);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("edit-credential"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url"))).clear();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")))
+                .sendKeys("www.superduperdrive.com");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-userName"))).clear();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-userName")))
+                .sendKeys("Test");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-password")))
+                .sendKeys("test123");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-modal-submit"))).click();
+
+        //Check edited credentials
+        driver.get("http://localhost:" + this.port + "/home");
+        detail=credentialTabPage.getDetail(driver);
+        Assertions.assertEquals("www.superduperdrive.com",detail.get(0));
         Assertions.assertEquals("Test", detail.get(1));
-        Assertions.assertEquals("test123", detail.get(2));
+        Assertions.assertNotEquals("test123", detail.get(2));
+
+        //Delete credentials
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("delete-credential"))).click();
+        driver.get("http://localhost:" + this.port + "/result");
+
         driver.get("http://localhost:" + this.port + "/home");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab"))).click();
         try{
             Thread.sleep(1000);
         }catch(InterruptedException e) {
             e.printStackTrace();
+            System.out.println("InterruptedException");
         }
-
-        String credentialSize = wait.until(driver ->driver.findElement(By.id("credentialSize")).getText());
-        Assertions.assertEquals("0", credentialSize);
+        driver.get("http://localhost:" + this.port + "/home");
 
         homePage = new HomePage(driver);
         homePage.logout();

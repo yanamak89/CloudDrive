@@ -30,24 +30,6 @@ public class NoteController {
         }
         return "redirect:/home";
 
-//    @PostMapping("/add")
-//    public String addNote(@ModelAttribute("note") Note note, Authentication authentication, RedirectAttributes redirectAttributes){
-//        User user = userService.getUser(authentication.name());
-//
-//        if(note.getNoteId() == null){
-//            noteService.addNote();
-//        }else{
-//            noteService.addNote()Note(note.getNoteTitle(), note.getNoteDescription(),user.getUserId());
-//        }
-//        return "redirect:/home";
-
-//    @GetMapping("/delete/{noteId}")
-//    public String deleteNote(@PathVariable long noteId){
-//        Integer result = noteService.deleteNoteByNoteId(Math.toIntExact(noteId));
-//        return "redirect:/home";
-//    }
-
-
 
     }
 

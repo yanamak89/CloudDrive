@@ -13,16 +13,8 @@
     <form action="#" th:action="@{/result}" method="GET">
     <div class="alert alert-success fill-parent">
         <h1 class="display-5">Success</h1>
-        <span id ="success-msg" th:if="${param.result}">Your changes were successfully saved. Click <a th:href="@{/home}">here</a> to continue.</span>
-    </div>
-    <div class="alert alert-danger fill-parent">
-        <h1 class="display-5">Error</h1>
-        <span id="not-saved-msg" th:if="${param.result}">Your changes were not saved. Click <a th:href="@{/home}">here</a> to continue.</span>
-    </div>
-    <div class="alert alert-danger fill-parent">
-        <h1 class="display-5">Error</h1>
-        <span id="error-msg" th:if="${param.result}">Example Error Message</span>
-        <span>Click <a th:href="@{/home}">here</a> to continue.</span>
+        <span id ="success-msg">Your changes were successfully saved.
+            Click <a th:href="@{/home}">here</a> to continue.</span>
     </div>
     </form>
 </div>

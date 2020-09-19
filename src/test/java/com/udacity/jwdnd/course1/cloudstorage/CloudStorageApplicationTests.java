@@ -141,6 +141,10 @@ public class CloudStorageApplicationTests {
         WebElement nav = driver.findElement(By.id("nav-notes-tab"));
         nav.click();
         notesTabPage.addNote(driver, "This is my title", "This is Description", nav);
+        driver.get("http://localhost:" + this.port +  "/result");
+        driver.findElement(By.id("home-link")).click();
+        driver.get("http://localhost:" + this.port +  "/home");
+        driver.findElement(By.id("nav-notes-tab"));
 
         List<String> detail = notesTabPage.getDetail(driver);
 

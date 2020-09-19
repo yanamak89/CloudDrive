@@ -28,7 +28,7 @@ public class NoteController {
             redirectAttributes.addFlashAttribute("editNoteSuccess","Note edited.");
             return "redirect:/result";
         }
-        return "redirect:/home";
+        return "redirect:/result";
 
 
     }

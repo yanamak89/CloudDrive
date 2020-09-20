@@ -60,6 +60,9 @@ public class NotesTabPage {
         List<String> detail = new ArrayList<>(List.of(titleList.get(0).getText(),
                 descriptionList.get(0).getText()));
         return detail;
+
+
+
     }
 
     public void addNote(WebDriver driver, String title, String description, WebElement nav){

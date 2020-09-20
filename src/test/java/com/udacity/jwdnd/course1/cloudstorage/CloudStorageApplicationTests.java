@@ -63,7 +63,7 @@ public class CloudStorageApplicationTests {
 
     @Test
     @Order(1)
-    public void getLoginPage(){
+    public void getLoginPage() {
         driver.get("http://localhost:" + this.port + "/login");
         Assertions.assertEquals("Login", driver.getTitle());
     }
@@ -131,55 +131,55 @@ public class CloudStorageApplicationTests {
     }
 
 
-
     @Test
     @Order(5)
-    public void testAddEditDeleteNote() {
+    public void testAddEditDeleteNote() throws InterruptedException {
         doLoginFunction();
 
+        //Check close button that notes are not added.
         notesTabPage = new NotesTabPage(driver);
-        WebElement nav = driver.findElement(By.id("nav-notes-tab"));
-        nav.click();
-        notesTabPage.addNote(driver, "This is my title", "This is Description", nav);
-        driver.get("http://localhost:" + this.port +  "/result");
-        driver.findElement(By.id("home-link")).click();
-        driver.get("http://localhost:" + this.port +  "/home");
-        driver.findElement(By.id("nav-notes-tab"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("add-note"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title"))).sendKeys("This is my title");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-description"))).sendKeys("This is Description");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-modal-submit"))).click();
+        driver.get("http://localhost:" + this.port + "/result");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("home-link"))).click();
+        driver.get("http://localhost:" + this.port + "/home");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
 
+
+        //Check that note are added
         List<String> detail = notesTabPage.getDetail(driver);
-
         Assertions.assertEquals("This is my title", detail.get(0));
         Assertions.assertEquals("This is Description", detail.get(1));
 
-        notesTabPage.editNote(driver, "Edit title", "Edit Description");
-
-        driver.get("http://localhost:" + this.port +  "/home");
-
-        detail = notesTabPage.getDetail(driver);
-
-        assertEquals("Edit Description", detail.get(0));
-        assertEquals("This is Description", detail.get(1));
-
-        notesTabPage.deleteNote(driver);
-
+        //Check edit note
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("edit-note"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title"))).sendKeys("This is my edited title");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-description"))).sendKeys("This is edited Description");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("edit-note"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title"))).sendKeys("This is my titleThis");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-description"))).sendKeys("This is DescriptionThis is edited Description");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-modal-submit"))).click();
+        driver.get("http://localhost:" + this.port + "/result");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("home-link"))).click();
         driver.get("http://localhost:" + this.port + "/home");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
 
-        wait.until(driver -> driver.findElement(By.id("nav-notes-tab"))).click();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //Delete note
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("delete-note"))).click();
+        driver.get("http://localhost:" + this.port + "/result");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("home-link"))).click();
+        driver.get("http://localhost:" + this.port + "/home");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
         String noteSize = wait.until(driver -> driver.findElement(By.id("note-size")).getText());
-
-        assertEquals("0", noteSize);
+        Assertions.assertEquals("0", noteSize);
 
         homePage = new HomePage(driver);
         homePage.logout();
 
         wait.until(ExpectedConditions.titleContains("Login"));
-
-        //  assertEquals("http://localhost:" + this.port + "/login?logout", driver.getCurrentUrl());
         assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
     }
 
@@ -199,6 +199,11 @@ public class CloudStorageApplicationTests {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-password")))
                 .sendKeys("test123");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-modal-submit"))).click();
+
+        driver.get("http://localhost:" + this.port + "/result");
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("home-link"))).click();
+        driver.get("http://localhost:" + this.port + "/home");
+
 
         //Check added credentials
         List<String> detail = credentialTabPage.getDetail(driver);
@@ -224,8 +229,8 @@ public class CloudStorageApplicationTests {
 
         //Check edited credentials
         driver.get("http://localhost:" + this.port + "/home");
-        detail=credentialTabPage.getDetail(driver);
-        Assertions.assertEquals("www.superduperdrive.com",detail.get(0));
+        detail = credentialTabPage.getDetail(driver);
+        Assertions.assertEquals("www.superduperdrive.com", detail.get(0));
         Assertions.assertEquals("Test", detail.get(1));
         Assertions.assertNotEquals("test123", detail.get(2));
 
@@ -236,9 +241,9 @@ public class CloudStorageApplicationTests {
 
         driver.get("http://localhost:" + this.port + "/home");
         wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab"))).click();
-        try{
+        try {
             Thread.sleep(1000);
-        }catch(InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println("InterruptedException");
         }

@@ -27,7 +27,7 @@ public class CredentialController {
             redirectAttributes.addFlashAttribute("editCredSuccess","Credential edited.");
             return "redirect:/result";
         }
-        return "redirect:/home";
+        return "redirect:/result";
     }
 
     @GetMapping("/delete/{credentialId:.+}")
